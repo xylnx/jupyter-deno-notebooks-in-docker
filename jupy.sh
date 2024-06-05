@@ -19,13 +19,13 @@ usage() {
 }
 
 jupy() {
-  source_env_vars
-
   # Stop running container
   if [[ ${1} == 'stop' ]]; then docker stop jupy; return; fi;
 
   # Make dir to store notebooks in
   ! [[ -d "${NOTEBOOKS_PATH}" ]] && mkdir -p ${NOTEBOOKS_PATH}
+
+  echo "Your notebooks will be stored in ${NOTEBOOKS_PATH}"
 
   # Run an existing container
   docker run -it -p 8888:8888 --volume ${NOTEBOOKS_PATH}:/jupyter_notebooks --name jupy --rm jupy:0.1
@@ -43,15 +43,29 @@ jupy_create() {
 
 source_env_vars() {
   set -a; source ${1:-".env"}; set +a
+}
+
+set_environment() {
 
   # assign env vars
   ! [[ -z "${JUPY_ENV_NOTEBOOKS_PATH}" ]] && NOTEBOOKS_PATH=${JUPY_ENV_NOTEBOOKS_PATH}
+
+  # override notebooks path if set using an options argument
+  ! [[ -z "${NOTEBOOKS_PATH_FROM_OPTS}" ]] && NOTEBOOKS_PATH=${NOTEBOOKS_PATH_FROM_OPTS}
 }
 
-while getopts p:ch opt 2>/dev/null
+init() {
+  source_env_vars
+  set_environment
+  jupy
+}
+init
+
+
+while getopts p:bh opt 2>/dev/null
 do
   case "${opt}" in
-    p) NOTEBOOKS_PATH=${OPTARG};;
+    p) NOTEBOOKS_PATH_FROM_OPTS=${OPTARG};;
     c) jupy_create; exit 0;;
     h) usage; exit 0;;
     *) echo "Invalid option param"; usage; exit 1;;
@@ -59,4 +73,3 @@ do
   esac
 done
 
-jupy
