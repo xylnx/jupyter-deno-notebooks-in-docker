@@ -1,10 +1,24 @@
 #!/bin/bash
 
 JUJS_PATH=${HOME}/Desktop/jupyter
-NOTEBOOKS_PATH=${HOME}/Desktop/jupyte/notebooks
+NOTEBOOKS_PATH=${HOME}/Desktop/jupyter_notebooks
+
+usage() {
+  echo "$(tput bold)jupy$(tput sgr0) [options]"
+  echo
+  echo "Start an existing docker container including jupyter labs, and a $(tput bold)deno$(tput sgr0) kernel."
+  echo
+  echo "This script also creates a directory to store jupyter notebooks in (on the host machine)."      
+  echo "Its default path is: ${HOME}/Desktop/jupyter_notebooks/."
+  echo
+  echo "$(tput bold)options:$(tput sgr0)"
+  echo "    -c            Create a docker container including jupyter labs, and a deno kernel."
+  echo "    -p<filePath>  Use the given path to store notbooks and start container."
+  echo "    -h            Show this help message."
+  echo
+}
 
 jupy() {
-
   # Stop running container
   if [[ ${1} == 'stop' ]]; then docker stop jupy; return; fi;
 
@@ -12,7 +26,7 @@ jupy() {
   ! [[ -d "${NOTEBOOKS_PATH}" ]] && mkdir -p ${NOTEBOOKS_PATH}
 
   # Run an existing container
-  docker run -it -p 3456:3456 --volume ${NOTEBOOKS_PATH}:/jupyter_notebooks --name jupy --rm jupy:0.1
+  docker run -it -p 8888:8888 --volume ${NOTEBOOKS_PATH}:/jupyter_notebooks --name jupy --rm jupy:0.1
 }
 
 jupy_create() {
@@ -25,12 +39,14 @@ jupy_create() {
   exit 0
 }
 
-while getopts p:c opt 2>/dev/null
+while getopts p:ch opt 2>/dev/null
 do
   case "${opt}" in
     p) NOTEBOOKS_PATH=${OPTARG};;
-    c) jupy_create;;
-    ?) echo "invalid option param"
+    c) jupy_create; exit 0;;
+    h) usage; exit 0;;
+    *) echo "Invalid option param"; usage; exit 1;;
+    ?) echo "Invalid option param"; usage; exit 1;;
   esac
 done
 
