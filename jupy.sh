@@ -3,20 +3,6 @@
 JUJS_PATH=${HOME}/Desktop/jupyter
 NOTEBOOKS_PATH="${NOTEBOOKS_PATH:=${HOME}/Desktop/jupyter_notebooks}"
 
-usage() {
-  echo "$(tput bold)jupy$(tput sgr0) [options]"
-  echo
-  echo "Start an existing docker container including jupyter labs, and a $(tput bold)deno$(tput sgr0) kernel."
-  echo
-  echo "This script also creates a directory to store jupyter notebooks in (on the host machine)."      
-  echo "Its default path is: ${HOME}/Desktop/jupyter_notebooks/."
-  echo
-  echo "$(tput bold)options:$(tput sgr0)"
-  echo "    -c            Create a docker container including jupyter labs, and a deno kernel."
-  echo "    -p<filePath>  Use the given path to store notbooks and start container."
-  echo "    -h            Show this help message."
-  echo
-}
 
 jupy() {
   # Stop running container
@@ -60,6 +46,26 @@ init() {
   jupy
 }
 init
+
+usage() {
+  echo "$(tput bold)jupy$(tput sgr0) [options]"
+  echo
+  echo "Runs a docker container with jupyter labs, and a $(tput bold)deno$(tput sgr0) kernel."
+  echo "Jupy also creates a directory to store jupyter notebooks on the host machine."      
+  echo "Its default path is: ${HOME}/Desktop/jupyter_notebooks/."
+  echo "Configure the path using the $(tput bold)-p$(tput sgr0) option. Or set $(tput bold)JUPY_ENV_NOTEBOOKS_PATH$(tput sgr0) in a $(tput bold).env$(tput sgr0) file."
+  echo
+  echo "$(tput bold)options:$(tput sgr0)"
+  echo
+  echo "-c            Creates a docker container including jupyter labs, and a deno kernel."
+  echo "-p<filePath>  Uses the given path to store notbooks and starts container."
+  echo "-h            Shows this help message."
+  echo
+  echo "$(tput bold)Environment variables:$(tput sgr0)"
+  echo "Jupy reads environment variables which can be set in a .env file."
+  echo
+  echo "JUPY_ENV_NOTEBOOKS_PATH    sets where to store jupyter notebooks" 
+}
 
 
 while getopts p:bh opt 2>/dev/null
