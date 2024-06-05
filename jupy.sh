@@ -1,7 +1,7 @@
 #!/bin/bash
 
 JUJS_PATH=${HOME}/Desktop/jupyter
-NOTEBOOKS_PATH=${HOME}/Desktop/jupyter_notebooks
+NOTEBOOKS_PATH="${NOTEBOOKS_PATH:=${HOME}/Desktop/jupyter_notebooks}"
 
 usage() {
   echo "$(tput bold)jupy$(tput sgr0) [options]"
@@ -19,6 +19,8 @@ usage() {
 }
 
 jupy() {
+  source_env_vars
+
   # Stop running container
   if [[ ${1} == 'stop' ]]; then docker stop jupy; return; fi;
 
@@ -37,6 +39,13 @@ jupy_create() {
   echo 'creating docker container -> jupy:0.1'
   docker build -t jupy:0.1 .
   exit 0
+}
+
+source_env_vars() {
+  set -a; source ${1:-".env"}; set +a
+
+  # assign env vars
+  ! [[ -z "${JUPY_ENV_NOTEBOOKS_PATH}" ]] && NOTEBOOKS_PATH=${JUPY_ENV_NOTEBOOKS_PATH}
 }
 
 while getopts p:ch opt 2>/dev/null
