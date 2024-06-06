@@ -3,7 +3,6 @@
 JUJS_PATH=${HOME}/Desktop/jupyter
 NOTEBOOKS_PATH="${NOTEBOOKS_PATH:=${HOME}/Desktop/jupyter_notebooks}"
 
-
 jupy() {
   # Stop running container
   if [[ ${1} == 'stop' ]]; then docker stop jupy; return; fi;
@@ -32,20 +31,12 @@ source_env_vars() {
 }
 
 set_environment() {
-
   # assign env vars
   ! [[ -z "${JUPY_ENV_NOTEBOOKS_PATH}" ]] && NOTEBOOKS_PATH=${JUPY_ENV_NOTEBOOKS_PATH}
-
   # override notebooks path if set using an options argument
   ! [[ -z "${NOTEBOOKS_PATH_FROM_OPTS}" ]] && NOTEBOOKS_PATH=${NOTEBOOKS_PATH_FROM_OPTS}
 }
 
-init() {
-  source_env_vars
-  set_environment
-  jupy
-}
-init
 
 usage() {
   echo "$(tput bold)jupy$(tput sgr0) [options]"
@@ -68,6 +59,7 @@ usage() {
 }
 
 
+
 while getopts p:bh opt 2>/dev/null
 do
   case "${opt}" in
@@ -79,3 +71,10 @@ do
   esac
 done
 
+init() {
+  source_env_vars
+  set_environment
+  jupy
+}
+
+init
