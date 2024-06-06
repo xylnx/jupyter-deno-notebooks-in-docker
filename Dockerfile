@@ -1,30 +1,8 @@
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#% BUILD
-#% ======
-#% `docker build -t jupy:01`
-#%
-#% RUN   
-#% ======
-#% in current directory, and
-#% store notebooks on the host machine (in notebooks/)
-#% `docker run 
-#%    -it 
-#%    --rm 
-#%    --name jupy 
-#%    -p 8888:8888 
-#%    --volume $(pwd)/notebooks:/jupyter_notebooks 
-#%    jupy:01 .`
-#%
-#% STOP
-#% ======
-#% `docker stop jupy`
-#% 
-#% SCRIPT
-#% ======
-#% There is a script, `jupy.sh`, 
-#% which helps with creating, starting, and stopping a container. 
-#% It also creates a directory on your host machine to store notebooks in.
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+## =========================================================
+## Set up jupyter notebooks. 
+## Additionally install `matplotlib` and `pandas`.
+## And add a `deno kernel` to also run JS in notebooks.
+## =========================================================
 
 FROM --platform=linux/amd64 denoland/deno:alpine
 
